@@ -30,7 +30,8 @@ proc foo(a: int) =
     echo a
 
 # use func when the procedure is like mathematical functions (always returns the same value)
-func addCustom2(a, b: int): int =
+func addCustom2(a, b: int = 5): int =
     result = a + b
 
-echo addCustom2(10, 10)
+echo addCustom2(b=10, a=2)
+echo addCustom2(10)
