@@ -18,6 +18,16 @@ proc `[]=`*(m: var Matrix, r, c: int, value: m.T) =
 
     m.rows[r-1][c-1] = value
 
+proc `+`*(a: Matrix, b: Matrix[a.R, a.C, a.T]): Matrix =
+    new(result)
+    let rows = a.rows
+    for idxR, row in rows:
+        for idxC, value in row:
+            result.rows[idxR][idxC] = b.rows[idxR][idxC] + value
+
+#proc `+=`*(m: var Matrix, a: Matrix) =
+
+
 proc print*(m: Matrix) =
     for idx, r in m.rows:
         for c in m.rows[idx]:
