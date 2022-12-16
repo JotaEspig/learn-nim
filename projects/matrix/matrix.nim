@@ -9,28 +9,47 @@ proc newMatrix*[T](r, c: static[int], arr: array[r, array[c, T]]): Matrix[r, c, 
         for idxC, value in row:
             result[idxR+1, idxC+1] = value
 
-proc `[]`*(m: Matrix, r, c: int): m.T =
-    result = m.rows[r-1][c-1]
+proc `[]`*(self: Matrix, r, c: int): self.T =
+    result = self.rows[r-1][c-1]
 
-proc `[]=`*(m: var Matrix, r, c: int, value: m.T) =
-    if (r < 1 or r > m.R) or (c < 1 or c > m.C):
+proc `[]=`*(self: var Matrix, r, c: int, value: self.T) =
+    if (r < 1 or r > self.R) or (c < 1 or c > self.C):
         raise newException(IndexDefect, "Invalid value for 'r' or 'c'")
 
-    m.rows[r-1][c-1] = value
+    self.rows[r-1][c-1] = value
 
 proc `+`*(a: Matrix, b: Matrix[a.R, a.C, a.T]): Matrix =
     new(result)
-    let rows = a.rows
-    for idxR, row in rows:
+    for idxR, row in a.rows:
         for idxC, value in row:
-            result.rows[idxR][idxC] = b.rows[idxR][idxC] + value
+            result.rows[idxR][idxC] = value + b.rows[idxR][idxC]
 
-#proc `+=`*(m: var Matrix, a: Matrix) =
+proc `+=`*(self: var Matrix, b: Matrix[self.R, self.C, self.T]) =
+    for idxR, row in b.rows:
+        for idxC, value in row:
+            self.rows[idxR][idxC] += value
 
+proc `-`*(a: Matrix, b: Matrix[a.R, a.C, a.T]): Matrix =
+    new(result)
+    for idxR, row in a.rows:
+        for idxC, value in row:
+            result.rows[idxR][idxC] = value - b.rows[idxR][idxC]
 
-proc print*(m: Matrix) =
-    for idx, r in m.rows:
-        for c in m.rows[idx]:
+proc `-=`*(self: var Matrix, b: Matrix[self.R, self.C, self.T]) =
+    for idxR, row in b.rows:
+        for idxC, value in row:
+            self.rows[idxR][idxC] -= value
+
+proc `==`*(self: Matrix, b: Matrix[self.R, self.C, self.T]): bool =
+    result = true
+    for idxR, row in b.rows:
+        for idxC, value in row:
+            if self.rows[idxR][idxC] != value:
+                result = false
+
+proc print*(self: Matrix) =
+    for idx, r in self.rows:
+        for c in self.rows[idx]:
             stdout.write($c & " ")
             stdout.flushFile()
 
